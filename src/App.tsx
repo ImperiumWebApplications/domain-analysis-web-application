@@ -18,10 +18,10 @@ const App = () => {
       return;
     }
 
-    const domDetailerApiKey = process.env.VITE_DOM_DETAILER_API_KEY;
+    const domDetailerApiKey = import.meta.env.VITE_DOM_DETAILER_API_KEY;
     const domDetailerApiUrl = `https://domdetailer.com/api/checkDomain.php?domain=${domain}&app=DomDetailer&apikey=${domDetailerApiKey}&majesticChoice=root`;
 
-    const corsProxyUrl = process.env.VITE_CORS_PROXY_URL;
+    const corsProxyUrl = import.meta.env.VITE_CORS_PROXY_URL;
     const goDaddyApiUrl = `${corsProxyUrl}https://api.godaddy.com/v1/appraisal/${domain}`;
 
     try { 
@@ -37,7 +37,7 @@ const App = () => {
       setData({ ...domDetailerData, govalue: goDaddyData.govalue });
 
       // New code added here:
-      const hostIoApiKey = process.env.VITE_HOSTIO_API_KEY;
+      const hostIoApiKey = import.meta.env.VITE_HOSTIO_API_KEY;
       const hostIoApiUrl = `https://host.io/api/domains/redirects/${domain}?token=${hostIoApiKey}`;
 
       const hostIoResponse = await fetch(hostIoApiUrl);
