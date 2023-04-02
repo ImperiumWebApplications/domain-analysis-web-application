@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { TextField, Button, Paper, Box, CircularProgress } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Paper,
+  Box,
+  CircularProgress,
+  FormControlLabel,
+  Checkbox,
+} from "@mui/material";
 import Alert from "@mui/lab/Alert";
 import "./App.css";
 
@@ -11,13 +19,30 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const displayParameters = [
+    "mozDA",
+    "mozPA",
+    "majesticTF",
+    "majesticCF",
+    "majesticLinks",
+    "majesticRefDomains",
+    "govalue",
+    "isIndexed",
+    "drops",
+    "expiration_date",
+    "domain_age",
+    "Redirect Domain",
+  ];
+
+  const [checkedParameters, setCheckedParameters] = useState(new Set<string>());
+
   const isValidDomain = (domain: string) => {
     const domainRegex = /^(?!:\/\/)([a-zA-Z0-9-_]+\.){1,}[a-zA-Z]{2,63}$/;
     return domainRegex.test(domain);
   };
 
   const formatCurrency = (amount: string) => {
-    console.log('Method called and amount is: ', amount)
+    console.log("Method called and amount is: ", amount);
     const numericAmount = Number(amount);
     return numericAmount.toLocaleString("en-US", {
       minimumFractionDigits: 0,
@@ -36,6 +61,18 @@ const App = () => {
     const months = Math.floor((ageInDays % 365) / 30);
     const days = ageInDays % 30;
     return `${years} Years ${months} Months ${days} Days`;
+  };
+
+  const handleCheckboxToggle = (parameter: string) => {
+    const updatedCheckedParameters = new Set(checkedParameters);
+
+    if (checkedParameters.has(parameter)) {
+      updatedCheckedParameters.delete(parameter);
+    } else {
+      updatedCheckedParameters.add(parameter);
+    }
+
+    setCheckedParameters(updatedCheckedParameters);
   };
 
   const handleSubmit = async () => {
@@ -114,20 +151,6 @@ const App = () => {
     }
   };
 
-  const displayParameters = [
-    "mozDA",
-    "mozPA",
-    "majesticTF",
-    "majesticCF",
-    "majesticLinks",
-    "majesticRefDomains",
-    "govalue",
-    "isIndexed",
-    "drops",
-    "expiration_date",
-    "domain_age",
-  ];
-
   useEffect(() => {
     if (data) {
       setShowAnimation(false);
@@ -160,6 +183,23 @@ const App = () => {
               Submit
             </Button>
           </Box>
+          <Box display="flex" justifyContent="center">
+            <div className="checkbox-container">
+              {displayParameters.map((parameter) => (
+                <FormControlLabel
+                  key={parameter}
+                  control={
+                    <Checkbox
+                      checked={checkedParameters.has(parameter)}
+                      onChange={() => handleCheckboxToggle(parameter)}
+                      color="secondary"
+                    />
+                  }
+                  label={parameter}
+                />
+              ))}
+            </div>
+          </Box>
         </div>
         {error && (
           <div className="error-container">
@@ -177,50 +217,54 @@ const App = () => {
           </div>
         ) : data && showAnimation ? (
           <div className="result-container">
-            {displayParameters.map((parameter, index) => (
-              <Paper
-                key={parameter}
-                className={`result-paper-${index} ${
-                  showAnimation ? "fadeInDown" : ""
-                }`}
-                elevation={3}
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="parameter-container">
-                  <span className="parameter">{parameter}</span>
-                  {parameter === "isIndexed" ? (
-                    <span className="value">
-                      : {data[parameter] ? "Yes" : "No"}
-                    </span>
-                  ) : parameter === "govalue" ? (
-                    <span className="value">
-                      : ${formatCurrency(data[parameter])}
-                    </span>
-                  ) : (
-                    <span className="value">: {data[parameter]}</span>
-                  )}
-                </div>
-              </Paper>
-            ))}
-            {redirects.slice(0, 10).map((redirectDomain, index) => (
-              <Paper
-                key={redirectDomain}
-                className={`result-paper-${displayParameters.length + index} ${
-                  showAnimation ? "fadeInDown" : ""
-                }`}
-                elevation={3}
-                style={{
-                  animationDelay: `${
-                    (displayParameters.length + index) * 100
-                  }ms`,
-                }}
-              >
-                <div className="parameter-container">
-                  <span className="parameter">Redirect Domain</span>
-                  <span className="value">: {redirectDomain}</span>
-                </div>
-              </Paper>
-            ))}
+            {displayParameters.map(
+              (parameter, index) =>
+                checkedParameters.has(parameter) && (
+                  <Paper
+                    key={parameter}
+                    className={`result-paper-${index} ${
+                      showAnimation ? "fadeInDown" : ""
+                    }`}
+                    elevation={3}
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <div className="parameter-container">
+                      <span className="parameter">{parameter}</span>
+                      {parameter === "isIndexed" ? (
+                        <span className="value">
+                          : {data[parameter] ? "Yes" : "No"}
+                        </span>
+                      ) : parameter === "govalue" ? (
+                        <span className="value">
+                          : ${formatCurrency(data[parameter])}
+                        </span>
+                      ) : (
+                        <span className="value">: {data[parameter]}</span>
+                      )}
+                    </div>
+                  </Paper>
+                )
+            )}
+            {checkedParameters.has("Redirect Domain") &&
+              redirects.slice(0, 10).map((redirectDomain, index) => (
+                <Paper
+                  key={redirectDomain}
+                  className={`result-paper-${
+                    displayParameters.length + index
+                  } ${showAnimation ? "fadeInDown" : ""}`}
+                  elevation={3}
+                  style={{
+                    animationDelay: `${
+                      (displayParameters.length + index) * 100
+                    }ms`,
+                  }}
+                >
+                  <div className="parameter-container">
+                    <span className="parameter">Redirect Domain</span>
+                    <span className="value">: {redirectDomain}</span>
+                  </div>
+                </Paper>
+              ))}
           </div>
         ) : null}
       </div>

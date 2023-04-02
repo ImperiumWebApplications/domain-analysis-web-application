@@ -48,7 +48,8 @@
 .result-paper-12,
 .result-paper-13,
 .result-paper-14,
-.result-paper-15 {
+.result-paper-15,
+.result-paper-16 {
   opacity: 0;
   padding: 1rem;
   border-radius: 1rem;
@@ -79,6 +80,10 @@
   align-items: center;
   height: 100%;
   min-height: 300px;
+}
+
+.checkbox-container {
+  color: white;
 }
 
 @keyframes fadeInDown {
@@ -151,5 +156,9 @@
   animation: fadeInDown 0.3s ease 1.2s forwards;
 }
 .fadeInDown.result-paper-15 {
+  animation: fadeInDown 0.3s ease 1.2s forwards;
+}
+
+.fadeInDown.result-paper-16 {
   animation: fadeInDown 0.3s ease 1.2s forwards;
 }
