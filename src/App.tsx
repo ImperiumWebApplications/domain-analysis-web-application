@@ -24,7 +24,7 @@ const App = () => {
     const corsProxyUrl = import.meta.env.VITE_CORS_PROXY_URL;
     const goDaddyApiUrl = `${corsProxyUrl}https://api.godaddy.com/v1/appraisal/${domain}`;
 
-    try { 
+    try {
       const responses = await Promise.all([
         fetch(domDetailerApiUrl),
         fetch(goDaddyApiUrl),
@@ -134,5 +134,4 @@ const App = () => {
     </div>
   );
 };
-
 export default App;
