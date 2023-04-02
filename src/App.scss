@@ -49,7 +49,8 @@
 .result-paper-13,
 .result-paper-14,
 .result-paper-15,
-.result-paper-16 {
+.result-paper-16,
+.result-paper-20 {
   opacity: 0;
   padding: 1rem;
   border-radius: 1rem;
@@ -97,68 +98,8 @@
   }
 }
 
-.fadeInDown.result-paper-0 {
-  animation: fadeInDown 0.3s ease forwards;
-}
-
-.fadeInDown.result-paper-1 {
-  animation: fadeInDown 0.3s ease 0.15s forwards;
-}
-
-.fadeInDown.result-paper-2 {
-  animation: fadeInDown 0.3s ease 0.3s forwards;
-}
-
-.fadeInDown.result-paper-3 {
-  animation: fadeInDown 0.3s ease 0.45s forwards;
-}
-
-.fadeInDown.result-paper-4 {
-  animation: fadeInDown 0.3s ease 0.6s forwards;
-}
-
-.fadeInDown.result-paper-5 {
-  animation: fadeInDown 0.3s ease 0.75s forwards;
-}
-
-.fadeInDown.result-paper-6 {
-  animation: fadeInDown 0.3s ease 0.75s forwards;
-}
-
-.fadeInDown.result-paper-7 {
-  animation: fadeInDown 0.3s ease 0.9s forwards;
-}
-
-.fadeInDown.result-paper-8 {
-  animation: fadeInDown 0.3s ease 1.05s forwards;
-}
-
-.fadeInDown.result-paper-9 {
-  animation: fadeInDown 0.3s ease 1.2s forwards;
-}
-
-.fadeInDown.result-paper-10 {
-  animation: fadeInDown 0.3s ease 1.2s forwards;
-}
-
-.fadeInDown.result-paper-11 {
-  animation: fadeInDown 0.3s ease 1.2s forwards;
-}
-
-.fadeInDown.result-paper-12 {
-  animation: fadeInDown 0.3s ease 1.2s forwards;
-}
-
-.fadeInDown.result-paper-13 {
-  animation: fadeInDown 0.3s ease 1.2s forwards;
-}
-.fadeInDown.result-paper-14 {
-  animation: fadeInDown 0.3s ease 1.2s forwards;
-}
-.fadeInDown.result-paper-15 {
-  animation: fadeInDown 0.3s ease 1.2s forwards;
-}
-
-.fadeInDown.result-paper-16 {
-  animation: fadeInDown 0.3s ease 1.2s forwards;
+@for $i from 0 through 200 {
+  .fadeInDown.result-paper-#{$i} {
+    animation: fadeInDown 0.3s ease ($i * 0.15s) forwards;
+  }
 }

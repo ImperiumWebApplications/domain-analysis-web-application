@@ -9,7 +9,7 @@ import {
   Checkbox,
 } from "@mui/material";
 import Alert from "@mui/lab/Alert";
-import "./App.css";
+import "./App.scss";
 
 const App = () => {
   const [domain, setDomain] = useState("");
@@ -228,45 +228,47 @@ const App = () => {
           </div>
         ) : data && showAnimation ? (
           <div className="result-container">
-            {displayParameters.map((parameter, index) =>
-              checkedParameters.has(parameter) ? (
-                <Paper
-                  key={parameter}
-                  className={`result-paper-${index} ${
-                    showAnimation ? "fadeInDown" : ""
-                  }`}
-                  elevation={3}
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <div className="parameter-container">
-                    <span className="parameter">{parameter}</span>
-                    <span className="value">
-                      :{" "}
-                      {parameter === "Google Indexed"
-                        ? data["isIndexed"] != null
-                          ? data["isIndexed"]
-                            ? "Yes"
-                            : "No"
-                          : "Not Available"
-                        : parameter === "Estimated Value"
-                        ? data["govalue"] != null
-                          ? `$${formatCurrency(data["govalue"])}`
-                          : "Not Available"
-                        : (parameterMapping as any)[parameter]
-                            .map((property: any) =>
-                              data[property] != null
-                                ? data[property]
-                                : "Not Available"
-                            )
-                            .join(" & ")}
-                    </span>
-                  </div>
-                </Paper>
-              ) : null
-            )}
+            {displayParameters
+              .filter((parameter) => parameter !== "Redirected Domains")
+              .map((parameter, index) =>
+                checkedParameters.has(parameter) ? (
+                  <Paper
+                    key={parameter}
+                    className={`result-paper-${index} ${
+                      showAnimation ? "fadeInDown" : ""
+                    }`}
+                    elevation={3}
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <div className="parameter-container">
+                      <span className="parameter">{parameter}</span>
+                      <span className="value">
+                        :{" "}
+                        {parameter === "Google Indexed"
+                          ? data["isIndexed"] != null
+                            ? data["isIndexed"]
+                              ? "Yes"
+                              : "No"
+                            : "Not Available"
+                          : parameter === "Estimated Value"
+                          ? data["govalue"] != null
+                            ? `$${formatCurrency(data["govalue"])}`
+                            : "Not Available"
+                          : (parameterMapping as any)[parameter]
+                              .map((property: any) =>
+                                data[property] != null
+                                  ? data[property]
+                                  : "Not Available"
+                              )
+                              .join(" & ")}
+                      </span>
+                    </div>
+                  </Paper>
+                ) : null
+              )}
 
             {checkedParameters.has("Redirected Domains") &&
-              redirects.slice(0, 10).map((redirectDomain, index) => (
+              redirects.map((redirectDomain, index) => (
                 <Paper
                   key={redirectDomain}
                   className={`result-paper-${
@@ -285,6 +287,23 @@ const App = () => {
                   </div>
                 </Paper>
               ))}
+
+            {checkedParameters.has("Redirected Domains") && (
+              <Paper
+                className={`result-paper-${displayParameters.length + 10} ${
+                  showAnimation ? "fadeInDown" : ""
+                }`}
+                elevation={3}
+                style={{
+                  animationDelay: `${(displayParameters.length + 10) * 100}ms`,
+                }}
+              >
+                <div className="parameter-container">
+                  <span className="parameter">Total Redirect Domains</span>
+                  <span className="value">: {redirects.length}</span>
+                </div>
+              </Paper>
+            )}
           </div>
         ) : null}
       </div>
