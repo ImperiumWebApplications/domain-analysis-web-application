@@ -45,7 +45,10 @@
 .result-paper-9,
 .result-paper-10,
 .result-paper-11,
-.result-paper-12 {
+.result-paper-12,
+.result-paper-13,
+.result-paper-14,
+.result-paper-15 {
   opacity: 0;
   padding: 1rem;
   border-radius: 1rem;
@@ -68,6 +71,14 @@
   background-image: linear-gradient(to right, #f44336, #ff5722);
   -webkit-background-clip: text;
   color: transparent;
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  min-height: 300px;
 }
 
 @keyframes fadeInDown {
@@ -129,6 +140,16 @@
   animation: fadeInDown 0.3s ease 1.2s forwards;
 }
 
-.fadeInDown.result-paper-11 {
+.fadeInDown.result-paper-12 {
+  animation: fadeInDown 0.3s ease 1.2s forwards;
+}
+
+.fadeInDown.result-paper-13 {
+  animation: fadeInDown 0.3s ease 1.2s forwards;
+}
+.fadeInDown.result-paper-14 {
+  animation: fadeInDown 0.3s ease 1.2s forwards;
+}
+.fadeInDown.result-paper-15 {
   animation: fadeInDown 0.3s ease 1.2s forwards;
 }
