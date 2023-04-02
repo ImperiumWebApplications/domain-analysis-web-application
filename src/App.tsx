@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { TextField, Button, Paper, Box, CircularProgress } from "@mui/material";
+import Alert from "@mui/lab/Alert";
 import "./App.css";
 
 const App = () => {
@@ -8,6 +9,7 @@ const App = () => {
   const [redirects, setRedirects] = useState([]);
   const [showAnimation, setShowAnimation] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const isValidDomain = (domain: string) => {
     const domainRegex = /^(?!:\/\/)([a-zA-Z0-9-_]+\.){1,}[a-zA-Z]{2,63}$/;
@@ -57,6 +59,8 @@ const App = () => {
       headers: whoisHeaders,
     };
     setIsLoading(true);
+    setError("");
+    setData(null);
     try {
       const responses = await Promise.all([
         fetch(domDetailerApiUrl),
@@ -94,6 +98,8 @@ const App = () => {
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
+      setIsLoading(false);
+      setError("An error occurred while fetching data. Please try again.");
     }
   };
 
@@ -144,6 +150,16 @@ const App = () => {
             </Button>
           </Box>
         </div>
+        {error && (
+          <div className="error-container">
+            <Alert
+              severity="error"
+              style={{ marginTop: "1rem", maxWidth: "500px" }}
+            >
+              {error}
+            </Alert>
+          </div>
+        )}
         {isLoading ? (
           <div className="loader-container">
             <CircularProgress color="secondary" />
