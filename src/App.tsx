@@ -43,7 +43,6 @@ const App = () => {
   };
 
   const formatCurrency = (amount: string) => {
-    console.log("Method called and amount is: ", amount);
     const numericAmount = Number(amount);
     return numericAmount.toLocaleString("en-US", {
       minimumFractionDigits: 0,
@@ -52,16 +51,26 @@ const App = () => {
   };
 
   const formatDate = (dateString: string) => {
+    if (!dateString) {
+      return "Not Available";
+    }
     const date = new Date(dateString);
     const options = { year: "numeric", month: "long", day: "numeric" };
     return date.toLocaleDateString("en-US", options as any);
   };
 
-  const formatDomainAge = (ageInDays: number) => {
+  const formatDomainAge = (ageInDays: number | null) => {
+    if (ageInDays === null) {
+      return "Not Available";
+    }
     const years = Math.floor(ageInDays / 365);
     const months = Math.floor((ageInDays % 365) / 30);
     const days = ageInDays % 30;
     return `${years} Years ${months} Months ${days} Days`;
+  };
+
+  const formatNumberWithCommas = (number: number) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   const handleCheckboxToggle = (parameter: string) => {
@@ -142,7 +151,9 @@ const App = () => {
         isIndexed: isIndexedData.isIndexed,
         drops: completednsData.drops || 0,
         expiration_date: formatDate(whoisData.result.expiration_date),
-        domain_age: formatDomainAge(domainAgeInDays),
+        domain_age: whoisData.result.creation_date
+          ? formatDomainAge(domainAgeInDays)
+          : formatDomainAge(null),
       });
 
       setRedirects(hostIoData.domains || []);
@@ -170,8 +181,12 @@ const App = () => {
   const parameterMapping = {
     "DA & PA": ["mozDA", "mozPA"],
     "TF & CF": ["majesticTF", "majesticCF"],
-    "Referring Domains": ["majesticRefDomains"],
-    "Total Backlinks": ["majesticLinks"],
+    "Referring Domains": [
+      (data: any) => formatNumberWithCommas(data.majesticRefDomains),
+    ],
+    "Total Backlinks": [
+      (data: any) => formatNumberWithCommas(data.majesticLinks),
+    ],
     "Estimated Value": ["govalue"],
     "Google Indexed": ["isIndexed"],
     "Domain Drops": ["drops"],
@@ -297,13 +312,16 @@ const App = () => {
                           ? data["govalue"] != null
                             ? `$${formatCurrency(data["govalue"])}`
                             : "Not Available"
-                          : (parameterMapping as any)[parameter]
-                              .map((property: any) =>
-                                data[property] != null
-                                  ? data[property]
-                                  : "Not Available"
-                              )
-                              .join(" & ")}
+                          : parameter === "Referring Domains" ||
+                            parameter === "Total Backlinks"
+                          ? (parameterMapping as any)[parameter][0](data) !==
+                            null
+                            ? (parameterMapping as any)[parameter][0](data)
+                            : "Not Available"
+                          : data[(parameterMapping as any)[parameter][0]] !=
+                            null
+                          ? data[(parameterMapping as any)[parameter][0]]
+                          : "Not Available"}
                       </span>
                     </div>
                   </Paper>
