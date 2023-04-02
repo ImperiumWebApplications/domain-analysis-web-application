@@ -342,7 +342,7 @@ const App = () => {
                 }}
               >
                 <div className="parameter-container">
-                  <span className="parameter">Total Redirect Domains</span>
+                  <span className="parameter">Total Redirected Domains</span>
                   <span className="value">: {redirects.length}</span>
                 </div>
               </Paper>
