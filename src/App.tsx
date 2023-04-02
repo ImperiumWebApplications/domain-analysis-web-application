@@ -183,6 +183,39 @@ const App = () => {
     <div className="App">
       <div className="container">
         <div className="content">
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            mt={3}
+            mb={3}
+            p={2}
+            bgcolor="rgba(255, 255, 255, 0.3)"
+            borderRadius="16px"
+            maxWidth="800px"
+            mx="auto"
+          >
+            <Typography variant="h4" component="h1" gutterBottom>
+              Free Domain Metrics Checker - Built with{" "}
+              <span role="img" aria-label="heart">
+                ❤️
+              </span>
+            </Typography>
+            <Typography variant="body1" component="p" gutterBottom>
+              Hi, I'm Sumit, the founder of SerpNames.com.
+            </Typography>
+            <Typography variant="body1" component="p" gutterBottom>
+              I built this domain metrics tool to help you get the latest SEO
+              metrics (and other data) of your domain.
+            </Typography>
+            <Typography variant="body1" component="p" gutterBottom>
+              It's completely free. Enjoy!{" "}
+              <span role="img" aria-label="happy eyes">
+                😊
+              </span>
+            </Typography>
+          </Box>
           <h1 className="title">DOMAIN ANALYSIS</h1>
           <Box display="flex" alignItems="center">
             <TextField
@@ -347,6 +380,38 @@ const App = () => {
           </Typography>
           <Typography variant="body1" component="p">
             Note: You can check up to 5 domains every 24 hours.
+          </Typography>
+          <Typography variant="body1" component="p">
+            Need a new feature? Want to report a bug? Please send me an email at{" "}
+            <a href="mailto:sumit@serpnames.com">sumit@serpnames.com</a> or say
+            hi on{" "}
+            <a
+              href="https://www.facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Facebook
+            </a>
+            ,{" "}
+            <a
+              href="https://www.linkedin.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Linkedin
+            </a>{" "}
+            or{" "}
+            <a
+              href="https://twitter.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Twitter
+            </a>
+            .
+          </Typography>
+          <Typography variant="body1" component="p">
+            I'd love to hear from you!
           </Typography>
         </Box>
       </div>
