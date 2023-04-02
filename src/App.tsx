@@ -24,24 +24,27 @@ const App = () => {
     const corsProxyUrl = import.meta.env.VITE_CORS_PROXY_URL;
     const goDaddyApiUrl = `${corsProxyUrl}https://api.godaddy.com/v1/appraisal/${domain}`;
 
+    const isIndexedApiUrl = `https://trueimperium.com/is_domain_indexed/${domain}`;
+
+    const hostIoApiKey = import.meta.env.VITE_HOSTIO_API_KEY;
+    const hostIoApiUrl = `https://host.io/api/domains/redirects/${domain}?token=${hostIoApiKey}`;
+
     try {
       const responses = await Promise.all([
         fetch(domDetailerApiUrl),
         fetch(goDaddyApiUrl),
+        fetch(isIndexedApiUrl),
+        fetch(hostIoApiUrl),
       ]);
 
-      const [domDetailerData, goDaddyData] = await Promise.all(
-        responses.map((response) => response.json())
-      );
+      const [domDetailerData, goDaddyData, isIndexedData, hostIoData] =
+        await Promise.all(responses.map((response) => response.json()));
 
-      setData({ ...domDetailerData, govalue: goDaddyData.govalue });
-
-      // New code added here:
-      const hostIoApiKey = import.meta.env.VITE_HOSTIO_API_KEY;
-      const hostIoApiUrl = `https://host.io/api/domains/redirects/${domain}?token=${hostIoApiKey}`;
-
-      const hostIoResponse = await fetch(hostIoApiUrl);
-      const hostIoData = await hostIoResponse.json();
+      setData({
+        ...domDetailerData,
+        govalue: goDaddyData.govalue,
+        isIndexed: isIndexedData.isIndexed,
+      });
 
       setRedirects(hostIoData.domains || []);
     } catch (error) {
@@ -57,6 +60,7 @@ const App = () => {
     "majesticLinks",
     "majesticRefDomains",
     "govalue",
+    "isIndexed"
   ];
 
   useEffect(() => {
@@ -105,10 +109,17 @@ const App = () => {
               >
                 <div className="parameter-container">
                   <span className="parameter">{parameter}</span>
-                  <span className="value">: {data[parameter]}</span>
+                  {parameter === "isIndexed" ? (
+                    <span className="value">
+                      : {data[parameter] ? "Yes" : "No"}
+                    </span>
+                  ) : (
+                    <span className="value">: {data[parameter]}</span>
+                  )}
                 </div>
               </Paper>
             ))}
+
             {redirects.slice(0, 10).map((redirectDomain, index) => (
               <Paper
                 key={redirectDomain}

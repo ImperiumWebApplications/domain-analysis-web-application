@@ -27,6 +27,7 @@
 
 .result-container {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 1rem;
   margin-top: 2rem;
@@ -43,7 +44,8 @@
 .result-paper-8,
 .result-paper-9,
 .result-paper-10,
-.result-paper-11 {
+.result-paper-11,
+.result-paper-12 {
   opacity: 0;
   padding: 1rem;
   border-radius: 1rem;
@@ -120,6 +122,10 @@
 }
 
 .fadeInDown.result-paper-10 {
+  animation: fadeInDown 0.3s ease 1.2s forwards;
+}
+
+.fadeInDown.result-paper-11 {
   animation: fadeInDown 0.3s ease 1.2s forwards;
 }
 
