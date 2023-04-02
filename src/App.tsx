@@ -7,6 +7,7 @@ import {
   CircularProgress,
   FormControlLabel,
   Checkbox,
+  Typography,
 } from "@mui/material";
 import Alert from "@mui/lab/Alert";
 import "./App.scss";
@@ -314,6 +315,40 @@ const App = () => {
             )}
           </div>
         ) : null}
+
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          mt={3}
+          mb={3}
+          p={2}
+          bgcolor="rgba(255, 255, 255, 0.3)"
+          borderRadius="16px"
+          maxWidth="800px"
+          mx="auto"
+        >
+          <Typography variant="h5" component="h2">
+            How to Use Domain Metrics Checker?
+          </Typography>
+          <Typography variant="body1" component="p">
+            Follow the 3 Simple Steps:
+          </Typography>
+          <Typography variant="body1" component="p">
+            1. Enter your domain name (e.g., SerpNames.com) and press SUBMIT.
+          </Typography>
+          <Typography variant="body1" component="p">
+            2. Wait for a few seconds.
+          </Typography>
+          <Typography variant="body1" component="p">
+            3. Tick the metric checkboxes you're interested in to get the latest
+            data.
+          </Typography>
+          <Typography variant="body1" component="p">
+            Note: You can check up to 5 domains every 24 hours.
+          </Typography>
+        </Box>
       </div>
     </div>
   );
