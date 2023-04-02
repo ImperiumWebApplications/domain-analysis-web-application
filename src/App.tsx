@@ -35,7 +35,7 @@ const App = () => {
   const [checkedParameters, setCheckedParameters] = useState(new Set<string>());
 
   const isValidDomain = (domain: string) => {
-    const domainRegex = /^(?!:\/\/)([a-zA-Z0-9-_]+\.){1,}[a-zA-Z]{2,63}$/;
+    const domainRegex = /^([a-zA-Z0-9-_]+\.){1}[a-zA-Z]{2,63}$/;
     return domainRegex.test(domain);
   };
 
@@ -243,13 +243,21 @@ const App = () => {
                     <span className="value">
                       :{" "}
                       {parameter === "Google Indexed"
-                        ? data["isIndexed"]
-                          ? "Yes"
-                          : "No"
+                        ? data["isIndexed"] != null
+                          ? data["isIndexed"]
+                            ? "Yes"
+                            : "No"
+                          : "Not Available"
                         : parameter === "Estimated Value"
-                        ? `$${formatCurrency(data["govalue"])}`
+                        ? data["govalue"] != null
+                          ? `$${formatCurrency(data["govalue"])}`
+                          : "Not Available"
                         : (parameterMapping as any)[parameter]
-                            .map((property: any) => data[property])
+                            .map((property: any) =>
+                              data[property] != null
+                                ? data[property]
+                                : "Not Available"
+                            )
                             .join(" & ")}
                     </span>
                   </div>
