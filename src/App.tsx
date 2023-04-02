@@ -34,22 +34,25 @@ const App = () => {
       return;
     }
 
+    const lowerCaseDomain = domain.toLowerCase();
+
+
     const domDetailerApiKey = import.meta.env.VITE_DOM_DETAILER_API_KEY;
-    const domDetailerApiUrl = `https://domdetailer.com/api/checkDomain.php?domain=${domain}&app=DomDetailer&apikey=${domDetailerApiKey}&majesticChoice=root`;
+    const domDetailerApiUrl = `https://domdetailer.com/api/checkDomain.php?domain=${lowerCaseDomain}&app=DomDetailer&apikey=${domDetailerApiKey}&majesticChoice=root`;
 
     const corsProxyUrl = import.meta.env.VITE_CORS_PROXY_URL;
-    const goDaddyApiUrl = `${corsProxyUrl}https://api.godaddy.com/v1/appraisal/${domain}`;
+    const goDaddyApiUrl = `${corsProxyUrl}https://api.godaddy.com/v1/appraisal/${lowerCaseDomain}`;
 
-    const isIndexedApiUrl = `https://trueimperium.com/is_domain_indexed/${domain}`;
+    const isIndexedApiUrl = `https://trueimperium.com/is_domain_indexed/${lowerCaseDomain}`;
 
     const hostIoApiKey = import.meta.env.VITE_HOSTIO_API_KEY;
-    const hostIoApiUrl = `https://host.io/api/domains/redirects/${domain}?token=${hostIoApiKey}`;
+    const hostIoApiUrl = `https://host.io/api/domains/redirects/${lowerCaseDomain}?token=${hostIoApiKey}`;
 
     const completednsApiKey = import.meta.env.VITE_COMPLETE_DNS_API_KEY;
-    const completednsApiUrl = `${corsProxyUrl}http://api.completedns.com/v2/dns-history/${domain}?key=${completednsApiKey}`;
+    const completednsApiUrl = `${corsProxyUrl}http://api.completedns.com/v2/dns-history/${lowerCaseDomain}?key=${completednsApiKey}`;
 
     const whoisApiKey = import.meta.env.VITE_WHOIS_API_KEY;
-    const whoisApiUrl = `https://api.apilayer.com/whois/query?domain=${domain}`;
+    const whoisApiUrl = `https://api.apilayer.com/whois/query?domain=${lowerCaseDomain}`;
     const whoisHeaders = new Headers();
     whoisHeaders.append("apikey", whoisApiKey);
 
