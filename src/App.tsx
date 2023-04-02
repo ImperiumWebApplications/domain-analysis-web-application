@@ -20,18 +20,16 @@ const App = () => {
   const [error, setError] = useState("");
 
   const displayParameters = [
-    "mozDA",
-    "mozPA",
-    "majesticTF",
-    "majesticCF",
-    "majesticLinks",
-    "majesticRefDomains",
-    "govalue",
-    "isIndexed",
-    "drops",
-    "expiration_date",
-    "domain_age",
-    "Redirect Domain",
+    "DA & PA",
+    "TF & CF",
+    "Referring Domains",
+    "Total Backlinks",
+    "Estimated Value",
+    "Google Indexed",
+    "Domain Drops",
+    "Expiration Date",
+    "Domain Age",
+    "Redirected Domains",
   ];
 
   const [checkedParameters, setCheckedParameters] = useState(new Set<string>());
@@ -160,6 +158,19 @@ const App = () => {
     }
   }, [data]);
 
+  const parameterMapping = {
+    "DA & PA": ["mozDA", "mozPA"],
+    "TF & CF": ["majesticTF", "majesticCF"],
+    "Referring Domains": ["majesticRefDomains"],
+    "Total Backlinks": ["majesticLinks"],
+    "Estimated Value": ["govalue"],
+    "Google Indexed": ["isIndexed"],
+    "Domain Drops": ["drops"],
+    "Expiration Date": ["expiration_date"],
+    "Domain Age": ["domain_age"],
+    "Redirected Domains": ["Redirect Domain"],
+  };
+
   return (
     <div className="App">
       <div className="container">
@@ -217,35 +228,36 @@ const App = () => {
           </div>
         ) : data && showAnimation ? (
           <div className="result-container">
-            {displayParameters.map(
-              (parameter, index) =>
-                checkedParameters.has(parameter) && (
-                  <Paper
-                    key={parameter}
-                    className={`result-paper-${index} ${
-                      showAnimation ? "fadeInDown" : ""
-                    }`}
-                    elevation={3}
-                    style={{ animationDelay: `${index * 100}ms` }}
-                  >
-                    <div className="parameter-container">
-                      <span className="parameter">{parameter}</span>
-                      {parameter === "isIndexed" ? (
-                        <span className="value">
-                          : {data[parameter] ? "Yes" : "No"}
-                        </span>
-                      ) : parameter === "govalue" ? (
-                        <span className="value">
-                          : ${formatCurrency(data[parameter])}
-                        </span>
-                      ) : (
-                        <span className="value">: {data[parameter]}</span>
-                      )}
-                    </div>
-                  </Paper>
-                )
+            {displayParameters.map((parameter, index) =>
+              checkedParameters.has(parameter) ? (
+                <Paper
+                  key={parameter}
+                  className={`result-paper-${index} ${
+                    showAnimation ? "fadeInDown" : ""
+                  }`}
+                  elevation={3}
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <div className="parameter-container">
+                    <span className="parameter">{parameter}</span>
+                    <span className="value">
+                      :{" "}
+                      {parameter === "Google Indexed"
+                        ? data["isIndexed"]
+                          ? "Yes"
+                          : "No"
+                        : parameter === "Estimated Value"
+                        ? `$${formatCurrency(data["govalue"])}`
+                        : (parameterMapping as any)[parameter]
+                            .map((property: any) => data[property])
+                            .join(" & ")}
+                    </span>
+                  </div>
+                </Paper>
+              ) : null
             )}
-            {checkedParameters.has("Redirect Domain") &&
+
+            {checkedParameters.has("Redirected Domains") &&
               redirects.slice(0, 10).map((redirectDomain, index) => (
                 <Paper
                   key={redirectDomain}
