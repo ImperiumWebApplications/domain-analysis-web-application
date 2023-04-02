@@ -60,7 +60,7 @@ const App = () => {
     "majesticLinks",
     "majesticRefDomains",
     "govalue",
-    "isIndexed"
+    "isIndexed",
   ];
 
   useEffect(() => {
@@ -119,7 +119,6 @@ const App = () => {
                 </div>
               </Paper>
             ))}
-
             {redirects.slice(0, 10).map((redirectDomain, index) => (
               <Paper
                 key={redirectDomain}
