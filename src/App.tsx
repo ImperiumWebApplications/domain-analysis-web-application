@@ -89,7 +89,7 @@ const App = () => {
         ...domDetailerData,
         govalue: goDaddyData.govalue,
         isIndexed: isIndexedData.isIndexed,
-        drops: completednsData.drops,
+        drops: completednsData.drops || 0,
         expiration_date: formatDate(whoisData.result.expiration_date),
         domain_age: formatDomainAge(domainAgeInDays),
       });
