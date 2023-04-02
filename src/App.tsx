@@ -18,6 +18,7 @@ const App = () => {
   const [showAnimation, setShowAnimation] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [disableSubmit, setDisableSubmit] = useState(false);
 
   const displayParameters = [
     "DA & PA",
@@ -77,6 +78,8 @@ const App = () => {
     if (!isValidDomain(domain)) {
       return;
     }
+
+    setDisableSubmit(true);
 
     const lowerCaseDomain = domain.toLowerCase();
 
@@ -150,6 +153,10 @@ const App = () => {
   };
 
   useEffect(() => {
+    setDisableSubmit(false);
+  }, [domain]);
+
+  useEffect(() => {
     if (data) {
       setShowAnimation(false);
       setTimeout(() => {
@@ -190,6 +197,7 @@ const App = () => {
               variant="contained"
               color="secondary"
               onClick={handleSubmit}
+              disabled={disableSubmit}
             >
               Submit
             </Button>
