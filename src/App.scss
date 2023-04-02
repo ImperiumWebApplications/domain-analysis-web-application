@@ -2,8 +2,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #212121;
+  background-image: linear-gradient(to right, #3150c3, #1a237e);
   min-height: 100vh;
+}
+
+.title {
+  background-image: linear-gradient(to right, #ff5722, #f44336);
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .container {
@@ -19,12 +25,6 @@
   align-items: center;
 }
 
-.title {
-  background-image: linear-gradient(to right, #42a5f5, #1a237e);
-  -webkit-background-clip: text;
-  color: transparent;
-}
-
 .result-container {
   display: flex;
   justify-content: center;
@@ -33,33 +33,18 @@
   margin-top: 2rem;
 }
 
-.result-paper-0,
-.result-paper-1,
-.result-paper-2,
-.result-paper-3,
-.result-paper-4,
-.result-paper-5,
-.result-paper-6,
-.result-paper-7,
-.result-paper-8,
-.result-paper-9,
-.result-paper-10,
-.result-paper-11,
-.result-paper-12,
-.result-paper-13,
-.result-paper-14,
-.result-paper-15,
-.result-paper-16,
-.result-paper-20 {
-  opacity: 0;
-  padding: 1rem;
-  border-radius: 1rem;
-  background: linear-gradient(
-    to bottom right,
-    rgba(255, 255, 255, 0.1),
-    rgba(255, 255, 255, 0.05)
-  );
-  border: 1px solid rgba(255, 255, 255, 0.3);
+@for $i from 0 through 20 {
+  .result-paper-#{$i} {
+    opacity: 0;
+    padding: 1rem;
+    border-radius: 1rem;
+    background: linear-gradient(
+      to bottom right,
+      rgba(255, 255, 255, 0.1),
+      rgba(255, 255, 255, 0.05)
+    );
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
 }
 
 .parameter-container {
