@@ -16,6 +16,15 @@ const App = () => {
     return domainRegex.test(domain);
   };
 
+  const formatCurrency = (amount: string) => {
+    console.log('Method called and amount is: ', amount)
+    const numericAmount = Number(amount);
+    return numericAmount.toLocaleString("en-US", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const options = { year: "numeric", month: "long", day: "numeric" };
@@ -35,7 +44,6 @@ const App = () => {
     }
 
     const lowerCaseDomain = domain.toLowerCase();
-
 
     const domDetailerApiKey = import.meta.env.VITE_DOM_DETAILER_API_KEY;
     const domDetailerApiUrl = `https://domdetailer.com/api/checkDomain.php?domain=${lowerCaseDomain}&app=DomDetailer&apikey=${domDetailerApiKey}&majesticChoice=root`;
@@ -183,6 +191,10 @@ const App = () => {
                   {parameter === "isIndexed" ? (
                     <span className="value">
                       : {data[parameter] ? "Yes" : "No"}
+                    </span>
+                  ) : parameter === "govalue" ? (
+                    <span className="value">
+                      : ${formatCurrency(data[parameter])}
                     </span>
                   ) : (
                     <span className="value">: {data[parameter]}</span>
