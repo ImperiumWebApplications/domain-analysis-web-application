@@ -183,7 +183,6 @@ const App = () => {
     // Save the data in the fetchedData state variable
     const updatedFetchedData = { ...fetchedData, [parameter]: data };
     setFetchedData(updatedFetchedData);
-    console.log(updatedFetchedData);
     setData((prevData) => ({ ...(prevData as any), ...updatedFetchedData }));
     return data;
   };
@@ -204,7 +203,6 @@ const App = () => {
       updatedCheckedParameters[parameter] = false;
     } else {
       updatedCheckedParameters[parameter] = true;
-      console.log("data from method", data);
       // If the submit button has been clicked at least once and the data for the parameter hasn't been fetched yet
       if (submitClicked && !data![(parameterMapping as any)[parameter][0]]) {
         setIsLoading(true);
@@ -224,6 +222,10 @@ const App = () => {
       return;
     }
 
+    if (!Object.values(checkBoxStates).some((checked) => checked)) {
+      return;
+    }
+
     if (remainingRequests <= 0) {
       setError(
         "You have reached your daily limit of 10 searches. Please try again tomorrow."
@@ -231,10 +233,9 @@ const App = () => {
       return;
     }
 
-    decrementRemainingRequests();
+    if (checkBoxStates) decrementRemainingRequests();
 
     setDisableSubmit(true);
-
     setIsLoading(true);
     setError("");
     setData(null);
@@ -425,7 +426,7 @@ const App = () => {
                 ) : null
               )}
 
-            {checkBoxStates["Redirected Domains"] && (
+            {checkBoxStates["Redirected Domains"] && redirects && (
               <Paper
                 className={`result-paper-${displayParameters.length + 10} ${
                   showAnimation ? "fadeInDown" : ""
@@ -443,6 +444,7 @@ const App = () => {
             )}
 
             {checkBoxStates["Redirected Domains"] &&
+              redirects &&
               redirects.map((redirectDomain, index) => (
                 <Paper
                   key={redirectDomain}
