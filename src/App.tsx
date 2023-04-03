@@ -345,6 +345,23 @@ const App = () => {
                 ) : null
               )}
 
+            {checkedParameters.has("Redirected Domains") && (
+              <Paper
+                className={`result-paper-${displayParameters.length + 10} ${
+                  showAnimation ? "fadeInDown" : ""
+                }`}
+                elevation={3}
+                style={{
+                  animationDelay: `${(displayParameters.length + 10) * 100}ms`,
+                }}
+              >
+                <div className="parameter-container">
+                  <span className="parameter">Total Redirected Domains</span>
+                  <span className="value">: {redirects.length}</span>
+                </div>
+              </Paper>
+            )}
+
             {checkedParameters.has("Redirected Domains") &&
               redirects.map((redirectDomain, index) => (
                 <Paper
@@ -365,23 +382,6 @@ const App = () => {
                   </div>
                 </Paper>
               ))}
-
-            {checkedParameters.has("Redirected Domains") && (
-              <Paper
-                className={`result-paper-${displayParameters.length + 10} ${
-                  showAnimation ? "fadeInDown" : ""
-                }`}
-                elevation={3}
-                style={{
-                  animationDelay: `${(displayParameters.length + 10) * 100}ms`,
-                }}
-              >
-                <div className="parameter-container">
-                  <span className="parameter">Total Redirected Domains</span>
-                  <span className="value">: {redirects.length}</span>
-                </div>
-              </Paper>
-            )}
           </div>
         ) : null}
 
