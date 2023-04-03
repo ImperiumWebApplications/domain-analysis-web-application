@@ -16,10 +16,10 @@ import "./App.scss";
 const App = () => {
   const [domain, setDomain] = useState("");
   const [data, setData] = useState(null);
-  const [redirects, setRedirects] = useState<Array<string>>([]);
+  const [redirects, setRedirects] = useState([]);
   const [showAnimation, setShowAnimation] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Array<string>>([]);
+  const [error, setError] = useState("");
   const [disableSubmit, setDisableSubmit] = useState(false);
 
   const displayParameters = [
@@ -85,12 +85,6 @@ const App = () => {
     setCheckedParameters(updatedCheckedParameters);
   };
 
-  const fetchHostIoRedirects = async (url: string, page: number) => {
-    const response = await fetch(`${url}&page=${page}`);
-    const data = await response.json();
-    return data;
-  };
-
   const handleSubmit = async () => {
     if (!isValidDomain(domain)) {
       return;
@@ -125,7 +119,7 @@ const App = () => {
       headers: whoisHeaders,
     };
     setIsLoading(true);
-    setError([]);
+    setError("");
     setData(null);
     try {
       const responses = await Promise.all([
@@ -141,7 +135,7 @@ const App = () => {
         domDetailerData,
         goDaddyData,
         isIndexedData,
-        initialHostIoData,
+        hostIoData,
         completednsData,
         whoisData,
       ] = await Promise.all(responses.map((response) => response.json()));
@@ -162,23 +156,12 @@ const App = () => {
           : formatDomainAge(null),
       });
 
-      const totalPages = Math.ceil(initialHostIoData.total / 5);
-      const allRedirects = [...(initialHostIoData.domains || [])];
-
-      for (let currentPage = 1; currentPage <= totalPages; currentPage++) {
-        const hostIoData = await fetchHostIoRedirects(
-          hostIoApiUrl,
-          currentPage
-        );
-        allRedirects.push(...(hostIoData.domains || []));
-      }
-
-      setRedirects(allRedirects);
+      setRedirects(hostIoData.domains || []);
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
       setIsLoading(false);
-      setError(["An error occurred while fetching data. Please try again."]);
+      setError("An error occurred while fetching data. Please try again.");
     }
   };
 
@@ -287,7 +270,7 @@ const App = () => {
             </div>
           </Box>
         </div>
-        {error.length > 0 && (
+        {error && (
           <div className="error-container">
             <Alert
               severity="error"
@@ -415,7 +398,8 @@ const App = () => {
             data.
           </Typography>
           <Typography variant="body1" component="p">
-            Note: You can check up to 5 domains every 24 hours.
+            Note: You can check up to 5 domains every 24 hours and up to 5
+            redirected domains per search.
           </Typography>
           <Typography variant="body1" component="p">
             Need a new feature? Want to report a bug? Please send me an email at{" "}
@@ -454,5 +438,4 @@ const App = () => {
     </div>
   );
 };
-
 export default App;
