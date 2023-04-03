@@ -398,7 +398,8 @@ const App = () => {
             data.
           </Typography>
           <Typography variant="body1" component="p">
-            Note: You can check up to 5 domains every 24 hours and up to 5 redirected domains per search.
+            Note: You can check up to 5 domains every 24 hours and up to 5
+            redirected domains per search.
           </Typography>
           <Typography variant="body1" component="p">
             Need a new feature? Want to report a bug? Please send me an email at{" "}
@@ -437,5 +438,4 @@ const App = () => {
     </div>
   );
 };
-
 export default App;
