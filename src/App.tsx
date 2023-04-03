@@ -22,6 +22,8 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [disableSubmit, setDisableSubmit] = useState(false);
+  const [submitClicked, setSubmitClicked] = useState(false);
+  const [fetchedData, setFetchedData] = useState<Record<string, any>>({});
 
   const maxRequests = 10;
   const duration = 24 * 60 * 60 * 1000; // 24 hours
@@ -43,7 +45,14 @@ const App = () => {
     "Redirected Domains",
   ];
 
-  const [checkedParameters, setCheckedParameters] = useState(new Set<string>());
+  const [checkBoxStates, setCheckBoxStates] = useState<Record<string, boolean>>(
+    displayParameters.reduce(
+      (acc, parameter) => ({ ...acc, [parameter]: false }),
+      {}
+    )
+  );
+
+  // const [checkBoxStates, setCheckedParameters] = useState(new Set<string>());
 
   const isValidDomain = (domain: string) => {
     const domainRegex = /^([a-zA-Z0-9-_]+\.){1}[a-zA-Z]{2,63}$/;
@@ -81,58 +90,8 @@ const App = () => {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  const handleCheckboxToggle = (parameter: string) => {
-    const updatedCheckedParameters = new Set(checkedParameters);
-
-    if (checkedParameters.has(parameter)) {
-      updatedCheckedParameters.delete(parameter);
-    } else {
-      updatedCheckedParameters.add(parameter);
-    }
-
-    setCheckedParameters(updatedCheckedParameters);
-  };
-
-  const getSearchedDomains = () => {
-    const searchedDomains = localStorage.getItem("searchedDomains");
-    return searchedDomains ? JSON.parse(searchedDomains) : [];
-  };
-
-  const saveSearchedDomain = (domain: string) => {
-    const searchedDomains = getSearchedDomains();
-    searchedDomains.push(domain);
-    localStorage.setItem("searchedDomains", JSON.stringify(searchedDomains));
-  };
-
-  const handleSubmit = async () => {
-    if (!isValidDomain(domain)) {
-      return;
-    }
-
-    if (remainingRequests <= 0) {
-      setError(
-        "You have reached your daily limit of 10 searches. Please try again tomorrow."
-      );
-      return;
-    }
-
-    decrementRemainingRequests();
-
-    setDisableSubmit(true);
-
+  const fetchDataForParameter = async (parameter: string) => {
     const lowerCaseDomain = domain.toLowerCase();
-
-    // Check if the domain is unique
-    const searchedDomains = getSearchedDomains();
-    if (searchedDomains.includes(lowerCaseDomain)) {
-      setError(
-        "This domain has already been searched. Please enter a new domain."
-      );
-      return;
-    }
-
-    // Save the domain in the local storage
-    saveSearchedDomain(lowerCaseDomain);
 
     const domDetailerApiKey = import.meta.env.VITE_DOM_DETAILER_API_KEY;
     const domDetailerApiUrl = `https://domdetailer.com/api/checkDomain.php?domain=${lowerCaseDomain}&app=DomDetailer&apikey=${domDetailerApiKey}&majesticChoice=root`;
@@ -153,50 +112,150 @@ const App = () => {
     const whoisHeaders = new Headers();
     whoisHeaders.append("apikey", whoisApiKey);
 
-    const requestOptions = {
-      method: "GET",
-      redirect: "follow",
-      headers: whoisHeaders,
+    // Define the API URL and headers for each parameter here
+    const apiInfo: Record<string, any> = {
+      "DA & PA": {
+        apiUrl: domDetailerApiUrl,
+        headers: {
+          /* headers for the DA & PA API */
+        },
+      },
+      "TF & CF": {
+        apiUrl: domDetailerApiUrl,
+        headers: {
+          /* headers for the TF & CF API */
+        },
+      },
+      "Referring Domains": {
+        apiUrl: domDetailerApiUrl,
+        headers: {
+          /* headers for the TF & CF API */
+        },
+      },
+      "Total Backlinks": {
+        apiUrl: domDetailerApiUrl,
+        headers: {
+          /* headers for the TF & CF API */
+        },
+      },
+      "Estimated Value": {
+        apiUrl: goDaddyApiUrl,
+        headers: {
+          /* headers for the TF & CF API */
+        },
+      },
+      "Google Indexed": {
+        apiUrl: isIndexedApiUrl,
+        headers: {
+          /* headers for the TF & CF API */
+        },
+      },
+      "Domain Drops": {
+        apiUrl: completednsApiUrl,
+        headers: {
+          /* headers for the TF & CF API */
+        },
+      },
+      "Expiration Date": {
+        apiUrl: whoisApiUrl,
+        headers: whoisHeaders,
+      },
+      "Domain Age": {
+        apiUrl: whoisApiUrl,
+        headers: whoisHeaders,
+      },
+      "Redirected Domains": {
+        apiUrl: hostIoApiUrl,
+        headers: {
+          /* headers for the TF & CF API */
+        },
+      },
     };
+
+    const { apiUrl, headers } = apiInfo[parameter];
+    const response = await fetch(apiUrl, headers);
+    const data = await response.json();
+
+    if (parameter === "Redirected Domains") {
+      setRedirects(data.domains);
+    }
+
+    // Save the data in the fetchedData state variable
+    const updatedFetchedData = { ...fetchedData, [parameter]: data };
+    setFetchedData(updatedFetchedData);
+    console.log(updatedFetchedData);
+    setData((prevData) => ({ ...(prevData as any), ...updatedFetchedData }));
+    return data;
+  };
+
+  const getDataForParameter = async (parameter: string) => {
+    // If the data has already been fetched, return it
+    if (fetchedData[parameter]) {
+      return fetchedData[parameter];
+    }
+
+    // Otherwise, fetch the data and save it in the fetchedData state variable
+    return await fetchDataForParameter(parameter);
+  };
+  const handleCheckboxToggle = async (parameter: string) => {
+    const updatedCheckedParameters = { ...checkBoxStates };
+
+    if (checkBoxStates[parameter]) {
+      updatedCheckedParameters[parameter] = false;
+    } else {
+      updatedCheckedParameters[parameter] = true;
+      console.log("data from method", data);
+      // If the submit button has been clicked at least once and the data for the parameter hasn't been fetched yet
+      if (submitClicked && !data![(parameterMapping as any)[parameter][0]]) {
+        setIsLoading(true);
+        const newData = await fetchDataForParameter(parameter);
+        setData((prevData) => {
+          setIsLoading(false);
+          return { ...(prevData as any), ...newData };
+        });
+      }
+    }
+
+    setCheckBoxStates(updatedCheckedParameters);
+  };
+
+  const handleSubmit = async () => {
+    if (!isValidDomain(domain)) {
+      return;
+    }
+
+    if (remainingRequests <= 0) {
+      setError(
+        "You have reached your daily limit of 10 searches. Please try again tomorrow."
+      );
+      return;
+    }
+
+    decrementRemainingRequests();
+
+    setDisableSubmit(true);
+
     setIsLoading(true);
     setError("");
     setData(null);
     try {
-      const responses = await Promise.all([
-        fetch(domDetailerApiUrl),
-        fetch(goDaddyApiUrl),
-        fetch(isIndexedApiUrl),
-        fetch(hostIoApiUrl),
-        fetch(completednsApiUrl),
-        fetch(whoisApiUrl, requestOptions as any),
-      ]);
+      setSubmitClicked(true);
 
-      const [
-        domDetailerData,
-        goDaddyData,
-        isIndexedData,
-        hostIoData,
-        completednsData,
-        whoisData,
-      ] = await Promise.all(responses.map((response) => response.json()));
+      // Fetch data only for the selected checkboxes
+      const fetchedData = await Promise.all(
+        Object.keys(checkBoxStates)
+          .filter((parameter) => checkBoxStates[parameter])
+          .map((parameter) => {
+            return getDataForParameter(parameter);
+          })
+      );
 
-      const creationDate = new Date(whoisData.result.creation_date);
-      const currentDate = new Date();
-      const ageDifference = currentDate.getTime() - creationDate.getTime();
-      const domainAgeInDays = Math.floor(ageDifference / (1000 * 3600 * 24));
+      // Combine the fetched data into a single object
+      const combinedData = fetchedData.reduce((accumulator, data) => {
+        return { ...accumulator, ...data };
+      }, {});
 
-      setData({
-        ...domDetailerData,
-        govalue: goDaddyData.govalue,
-        isIndexed: isIndexedData.isIndexed,
-        drops: completednsData.drops || 0,
-        expiration_date: formatDate(whoisData.result.expiration_date),
-        domain_age: whoisData.result.creation_date
-          ? formatDomainAge(domainAgeInDays)
-          : formatDomainAge(null),
-      });
-
-      setRedirects(hostIoData.domains || []);
+      setData(combinedData);
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -221,12 +280,8 @@ const App = () => {
   const parameterMapping = {
     "DA & PA": ["mozDA", "mozPA"],
     "TF & CF": ["majesticTF", "majesticCF"],
-    "Referring Domains": [
-      (data: any) => formatNumberWithCommas(data.majesticRefDomains),
-    ],
-    "Total Backlinks": [
-      (data: any) => formatNumberWithCommas(data.majesticLinks),
-    ],
+    "Total Backlinks": ["majesticLinks", formatNumberWithCommas],
+    "Referring Domains": ["majesticRefDomains", formatNumberWithCommas],
     "Estimated Value": ["govalue"],
     "Google Indexed": ["isIndexed"],
     "Domain Drops": ["drops"],
@@ -299,7 +354,7 @@ const App = () => {
                   key={parameter}
                   control={
                     <Checkbox
-                      checked={checkedParameters.has(parameter)}
+                      checked={checkBoxStates[parameter]}
                       onChange={() => handleCheckboxToggle(parameter)}
                       color="secondary"
                     />
@@ -329,7 +384,7 @@ const App = () => {
             {displayParameters
               .filter((parameter) => parameter !== "Redirected Domains")
               .map((parameter, index) =>
-                checkedParameters.has(parameter) ? (
+                checkBoxStates[parameter] ? (
                   <Paper
                     key={parameter}
                     className={`result-paper-${index} ${
@@ -354,9 +409,11 @@ const App = () => {
                             : "Not Available"
                           : parameter === "Referring Domains" ||
                             parameter === "Total Backlinks"
-                          ? (parameterMapping as any)[parameter][0](data) !==
+                          ? data[(parameterMapping as any)[parameter][0]] !=
                             null
-                            ? (parameterMapping as any)[parameter][0](data)
+                            ? (parameterMapping as any)[parameter][1](
+                                data[(parameterMapping as any)[parameter][0]]
+                              )
                             : "Not Available"
                           : data[(parameterMapping as any)[parameter][0]] !=
                             null
@@ -368,7 +425,7 @@ const App = () => {
                 ) : null
               )}
 
-            {checkedParameters.has("Redirected Domains") && (
+            {checkBoxStates["Redirected Domains"] && (
               <Paper
                 className={`result-paper-${displayParameters.length + 10} ${
                   showAnimation ? "fadeInDown" : ""
@@ -385,7 +442,7 @@ const App = () => {
               </Paper>
             )}
 
-            {checkedParameters.has("Redirected Domains") &&
+            {checkBoxStates["Redirected Domains"] &&
               redirects.map((redirectDomain, index) => (
                 <Paper
                   key={redirectDomain}
