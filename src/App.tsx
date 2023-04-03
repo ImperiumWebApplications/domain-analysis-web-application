@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import Alert from "@mui/lab/Alert";
+import useRateLimiter from "./hooks/useRateLimiter";
 
 import "./App.scss";
 
@@ -21,6 +22,13 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [disableSubmit, setDisableSubmit] = useState(false);
+
+  const maxRequests = 10;
+  const duration = 24 * 60 * 60 * 1000; // 24 hours
+  const { remainingRequests, decrementRemainingRequests } = useRateLimiter(
+    maxRequests,
+    duration
+  );
 
   const displayParameters = [
     "DA & PA",
@@ -85,14 +93,46 @@ const App = () => {
     setCheckedParameters(updatedCheckedParameters);
   };
 
+  const getSearchedDomains = () => {
+    const searchedDomains = localStorage.getItem("searchedDomains");
+    return searchedDomains ? JSON.parse(searchedDomains) : [];
+  };
+
+  const saveSearchedDomain = (domain: string) => {
+    const searchedDomains = getSearchedDomains();
+    searchedDomains.push(domain);
+    localStorage.setItem("searchedDomains", JSON.stringify(searchedDomains));
+  };
+
   const handleSubmit = async () => {
     if (!isValidDomain(domain)) {
       return;
     }
 
+    if (remainingRequests <= 0) {
+      setError(
+        "You have reached your daily limit of 10 searches. Please try again tomorrow."
+      );
+      return;
+    }
+
+    decrementRemainingRequests();
+
     setDisableSubmit(true);
 
     const lowerCaseDomain = domain.toLowerCase();
+
+    // Check if the domain is unique
+    const searchedDomains = getSearchedDomains();
+    if (searchedDomains.includes(lowerCaseDomain)) {
+      setError(
+        "This domain has already been searched. Please enter a new domain."
+      );
+      return;
+    }
+
+    // Save the domain in the local storage
+    saveSearchedDomain(lowerCaseDomain);
 
     const domDetailerApiKey = import.meta.env.VITE_DOM_DETAILER_API_KEY;
     const domDetailerApiUrl = `https://domdetailer.com/api/checkDomain.php?domain=${lowerCaseDomain}&app=DomDetailer&apikey=${domDetailerApiKey}&majesticChoice=root`;
