@@ -33,7 +33,7 @@
   margin-top: 2rem;
 }
 
-@for $i from 0 through 20 {
+@for $i from 0 through 1000 {
   .result-paper-#{$i} {
     opacity: 0;
     padding: 1rem;
@@ -83,7 +83,7 @@
   }
 }
 
-@for $i from 0 through 200 {
+@for $i from 0 through 1000 {
   .fadeInDown.result-paper-#{$i} {
     animation: fadeInDown 0.3s ease ($i * 0.15s) forwards;
   }
