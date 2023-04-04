@@ -21,7 +21,7 @@ const App = () => {
   const [showAnimation, setShowAnimation] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [disableSubmit, setDisableSubmit] = useState(false);
+  const [disableSubmit, setDisableSubmit] = useState(true);
   const [submitClicked, setSubmitClicked] = useState(false);
   const [fetchedData, setFetchedData] = useState<Record<string, any>>({});
 
@@ -269,6 +269,7 @@ const App = () => {
   };
 
   useEffect(() => {
+    if (!domain) return;
     setDisableSubmit(false);
   }, [domain]);
 
