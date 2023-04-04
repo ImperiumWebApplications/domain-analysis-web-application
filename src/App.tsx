@@ -179,7 +179,7 @@ const App = () => {
     if (parameter === "Redirected Domains") {
       setRedirects({
         total: data.total,
-        domains: data.domains
+        domains: data.domains,
       });
     }
 
@@ -448,25 +448,27 @@ const App = () => {
 
             {checkBoxStates["Redirected Domains"] &&
               redirects &&
-              (redirects as any).domains.map((redirectDomain: any, index: any) => (
-                <Paper
-                  key={redirectDomain}
-                  className={`result-paper-${
-                    displayParameters.length + index
-                  } ${showAnimation ? "fadeInDown" : ""}`}
-                  elevation={3}
-                  style={{
-                    animationDelay: `${
-                      (displayParameters.length + index) * 100
-                    }ms`,
-                  }}
-                >
-                  <div className="parameter-container">
-                    <span className="parameter">Redirected Domain</span>
-                    <span className="value">: {redirectDomain}</span>
-                  </div>
-                </Paper>
-              ))}
+              (redirects as any).domains.map(
+                (redirectDomain: any, index: any) => (
+                  <Paper
+                    key={redirectDomain}
+                    className={`result-paper-${
+                      displayParameters.length + index
+                    } ${showAnimation ? "fadeInDown" : ""}`}
+                    elevation={3}
+                    style={{
+                      animationDelay: `${
+                        (displayParameters.length + index) * 100
+                      }ms`,
+                    }}
+                  >
+                    <div className="parameter-container">
+                      <span className="parameter">Redirected Domain</span>
+                      <span className="value">: {redirectDomain}</span>
+                    </div>
+                  </Paper>
+                )
+              )}
           </div>
         ) : null}
 
@@ -484,56 +486,14 @@ const App = () => {
           mx="auto"
         >
           <Typography variant="h5" component="h2">
-            How to Use Domain Metrics Checker?
-          </Typography>
-          <Typography variant="body1" component="p">
-            Follow the 3 Simple Steps:
+            How to Use SerpNames Checker?
           </Typography>
           <Typography variant="body1" component="p">
             1. Enter your domain name (e.g., SerpNames.com) and press SUBMIT.
           </Typography>
           <Typography variant="body1" component="p">
-            2. Wait for a few seconds.
-          </Typography>
-          <Typography variant="body1" component="p">
-            3. Tick the metric checkboxes you're interested in to get the latest
+            2. Tick the metric checkboxes you're interested in to get the latest
             data.
-          </Typography>
-          <Typography variant="body1" component="p">
-            Note: You can check up to 5 domains every 24 hours and up to 5
-            redirected domains per search.
-          </Typography>
-          <Typography variant="body1" component="p">
-            Need a new feature? Want to report a bug? Please send me an email at{" "}
-            <a href="mailto:sumit@serpnames.com">sumit@serpnames.com</a> or say
-            hi on{" "}
-            <a
-              href="https://www.facebook.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Facebook
-            </a>
-            ,{" "}
-            <a
-              href="https://www.linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Linkedin
-            </a>{" "}
-            or{" "}
-            <a
-              href="https://twitter.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Twitter
-            </a>
-            .
-          </Typography>
-          <Typography variant="body1" component="p">
-            I'd love to hear from you!
           </Typography>
         </Box>
       </div>
