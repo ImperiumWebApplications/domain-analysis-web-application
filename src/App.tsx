@@ -17,7 +17,7 @@ import "./App.scss";
 const App = () => {
   const [domain, setDomain] = useState("");
   const [data, setData] = useState(null);
-  const [redirects, setRedirects] = useState([]);
+  const [redirects, setRedirects] = useState({});
   const [showAnimation, setShowAnimation] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -177,7 +177,10 @@ const App = () => {
     const data = await response.json();
 
     if (parameter === "Redirected Domains") {
-      setRedirects(data.domains);
+      setRedirects({
+        total: data.total,
+        domains: data.domains
+      });
     }
 
     // Save the data in the fetchedData state variable
@@ -438,14 +441,14 @@ const App = () => {
               >
                 <div className="parameter-container">
                   <span className="parameter">Total Redirected Domains</span>
-                  <span className="value">: {redirects.length}</span>
+                  <span className="value">: {(redirects as any).total}</span>
                 </div>
               </Paper>
             )}
 
             {checkBoxStates["Redirected Domains"] &&
               redirects &&
-              redirects.map((redirectDomain, index) => (
+              (redirects as any).domains.map((redirectDomain: any, index: any) => (
                 <Paper
                   key={redirectDomain}
                   className={`result-paper-${
