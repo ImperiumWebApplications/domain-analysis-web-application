@@ -67,25 +67,6 @@ const App = () => {
     });
   };
 
-  const formatDate = (dateString: string) => {
-    if (!dateString) {
-      return "Not Available";
-    }
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    return date.toLocaleDateString("en-US", options as any);
-  };
-
-  const formatDomainAge = (ageInDays: number | null) => {
-    if (ageInDays === null) {
-      return "Not Available";
-    }
-    const years = Math.floor(ageInDays / 365);
-    const months = Math.floor((ageInDays % 365) / 30);
-    const days = ageInDays % 30;
-    return `${years} Years ${months} Months ${days} Days`;
-  };
-
   const formatNumberWithCommas = (number: number) => {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
@@ -222,10 +203,6 @@ const App = () => {
 
   const handleSubmit = async () => {
     if (!isValidDomain(domain)) {
-      return;
-    }
-
-    if (!Object.values(checkBoxStates).some((checked) => checked)) {
       return;
     }
 
